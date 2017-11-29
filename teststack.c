@@ -1,0 +1,25 @@
+#include "param.h"
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+#include "fs.h"
+#include "fcntl.h"
+#include "syscall.h"
+#include "traps.h"
+#include "memlayout.h"
+
+int main(){
+      int test[2000] ;
+      for (int i=0; i < 20; i++){
+        test[i] = 0;
+      }
+      printf(1,"hello %x",test[0]);
+      int test2[2000] ;
+            for (int i=0; i < 20; i++){
+                      test2[i] = 1;
+                            }
+                  printf(1,"hello %x",test2[0]);
+
+      exit();
+}
+
