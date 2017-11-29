@@ -75,10 +75,10 @@ exec(char *path, char **argv)
   // Make the first inaccessible.  Use the second as the user stack.
   //Made modifications here had sz  change from sz pg round up(sz)
   sz = PGROUNDUP(sz);
-   if((allocuvm(pgdir, sz, sz + 2*PGSIZE) == 0))
+   if((allocuvm(pgdir, sz, sz + PGSIZE) == 0))
       goto bad;
   //szstack = KERNBASE - (PGSIZE*3);//sets stack pointer to point to two pages
-  if((szstack = allocuvm(pgdir, (KERNBASE-4) - 2*PGSIZE, KERNBASE-4)) == 0)
+  if((szstack = allocuvm(pgdir, (KERNBASE-4) - 2* 2* PGSIZE, KERNBASE-4)) == 0)
     goto bad;
 //clear pte_u on page used to create an inaccessaible page beneath the userstack
   clearpteu(pgdir, (char*)(sz)); 
@@ -114,7 +114,7 @@ if(copyout(pgdir, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
     if(*s == '/')
       last = s+1;
   safestrcpy(curproc->name, last, sizeof(curproc->name));
-
+  cprintf("startstack: %x , endstack: %x \n", curproc->startstack, curproc->endstack);
   // Commit to the user image.
   oldpgdir = curproc->pgdir;
   curproc->pgdir = pgdir;

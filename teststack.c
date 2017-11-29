@@ -9,7 +9,7 @@
 #include "memlayout.h"
 
 int main(){
-      int test[2049] ;
+      int test[2000] ;
       for (int i=0; i < 20; i++){
         test[i] = 0;
       }
