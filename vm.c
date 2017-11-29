@@ -228,8 +228,9 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     return 0;
   if(newsz < oldsz)
     return oldsz;
-
+//  cprintf("oldsz: %x ,  newsz: %x \n", oldsz, newsz);
   a = PGROUNDUP(oldsz);
+ cprintf("in allocuvm: oldsz: %x ,  newsz: %x \n", a, newsz);
   for(; a < newsz; a += PGSIZE){
   //kalloc allocates one 4096 byte page returns pointer that kernel can use
   //or returns 0 if the memory cannot be allocated
@@ -321,7 +322,7 @@ copyuvm(pde_t *pgdir, uint sz, uint esp, uint endstack)
   pte_t *pte;
   uint pa, i, flags;
   char *mem;
-  cprintf("Entering copyuvm\n");
+  cprintf("Entering copyuvm endstack: %x , startstack %x \n", esp, endstack);
   if((d = setupkvm()) == 0)
     return 0;
   for(i = 0; i < sz; i += PGSIZE){
@@ -342,8 +343,10 @@ copyuvm(pde_t *pgdir, uint sz, uint esp, uint endstack)
    // cprintf("start of second for loop\n");
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
-    if(!(*pte & PTE_P))
+    if(!(*pte & PTE_P)){
+      cprintf("i: %x \n", i);
       panic("copyuvm: page not present");
+    }
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
     if((mem = kalloc()) == 0)
@@ -352,6 +355,7 @@ copyuvm(pde_t *pgdir, uint sz, uint esp, uint endstack)
     if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
       goto bad;
     }      
+  cprintf("End of copyuvm\n");
   return d;
 
 bad:

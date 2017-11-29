@@ -78,7 +78,7 @@ exec(char *path, char **argv)
    if((allocuvm(pgdir, sz, sz + PGSIZE) == 0))
       goto bad;
   //szstack = KERNBASE - (PGSIZE*3);//sets stack pointer to point to two pages
-  if((szstack = allocuvm(pgdir, (KERNBASE-4) - 2* 2* PGSIZE, KERNBASE-4)) == 0)
+  if((szstack = allocuvm(pgdir, (KERNBASE-4) -2*PGSIZE, KERNBASE-4)) == 0)
     goto bad;
 //clear pte_u on page used to create an inaccessaible page beneath the userstack
   clearpteu(pgdir, (char*)(sz)); 
@@ -114,7 +114,6 @@ if(copyout(pgdir, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
     if(*s == '/')
       last = s+1;
   safestrcpy(curproc->name, last, sizeof(curproc->name));
-  cprintf("startstack: %x , endstack: %x \n", curproc->startstack, curproc->endstack);
   // Commit to the user image.
   oldpgdir = curproc->pgdir;
   curproc->pgdir = pgdir;
@@ -122,6 +121,7 @@ if(copyout(pgdir, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
   curproc->endstack = curproc->startstack-PGSIZE;//current bottom of stack!
+  cprintf("in exec startstack: %x , endstack: %x \n", curproc->startstack, curproc->endstack);
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;
