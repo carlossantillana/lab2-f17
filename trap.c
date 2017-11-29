@@ -78,7 +78,13 @@ trap(struct trapframe *tf)
     lapiceoi();
     break;
   case T_PGFLT:
-    cprintf("Don't really know what to do here...\n");
+    cprintf("current esp: %x , endstack: %x , ", myproc()->tf->esp, myproc()->endstack);
+
+    if (myproc()->tf->esp < myproc()->endstack && myproc()->tf->esp > myproc()->sz+PGSIZE){
+
+      if ((myproc()->endstack = allocuvm(myproc()->pgdir, myproc()->endstack-PGSIZE, myproc()->endstack)) == 0)
+       panic("ahhh bad things happed\n");
+    }
     exit();
     break;
   //PAGEBREAK: 13
