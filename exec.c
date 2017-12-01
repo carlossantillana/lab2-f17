@@ -121,7 +121,7 @@ if(copyout(pgdir, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
   curproc->endstack = curproc->startstack-PGSIZE;//current bottom of stack!
-  cprintf("in exec startstack: %x , endstack: %x \n", curproc->startstack, curproc->endstack);
+  //cprintf("in exec startstack: %x , endstack: %x \n", curproc->startstack, curproc->endstack);
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;
