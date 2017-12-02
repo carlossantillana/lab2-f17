@@ -14,7 +14,7 @@ struct {
     char *frame;
     int refcnt;
   } shm_pages[64];
-} shm_table;
+}shm_table;
 
 void shminit() {
   int i;
@@ -29,6 +29,7 @@ void shminit() {
 }
 
 int shm_open(int id, char **pointer) {
+  acquire(&(shm_table.lock));
   uint found = 0, empty = 0;
   char * pa, * va;
   struct proc * curproc= myproc();
@@ -66,10 +67,23 @@ return (char*) va; //added to remove compiler warning -- you should decide what 
 
 
 int shm_close(int id) {
-//you write this too!
-
-
-
-
-return 0; //added to remove compiler warning -- you should decide what to return
+  acquire(&(shm_table.lock));
+ //  char * va;
+ // struct proc * curproc = myproc();
+ //  va = (char*)PGROUNDUP(curproc->sz);  
+  for (uint i = 0; i < 64;i++)
+  {
+    if (id == shm_table.shm_pages[i].id)
+    {
+      shm_table.shm_pages[i].refcnt--;
+      if (shm_table.shm_pages[i].refcnt == 0)
+      {
+        shm_table.shm_pages[i].id =0;
+        shm_table.shm_pages[i].frame =0;
+        shm_table.shm_pages[i].refcnt = 0;
+    } // id conditional
+  } // for loop 
+  }
+  release(&(shm_table.lock));
+  return 0; //added to remove compiler warning -- you should decide what to return
 }
