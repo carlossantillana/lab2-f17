@@ -37,16 +37,14 @@ int shm_open(int id, char **pointer) {
     if (shm_table.shm_pages[i].id == id){
       found = i+1;// if found set found to position of page plus one (for edge cases in if)
      }
-    if (shm_table.shm_pages[i].refcnt == 0 && empty == 0){
-      shm_table.shm_pages[i].id = id;
-      empty = 1;
-    }
   }
   if (found ){//case 1
-    pa = shm_table.shm_pages[found-1].frame;//put inside map pages
-    mappages(curproc->pgdir, va,PGSIZE,V2P(pa), PTE_U | PTE_W);
-    shm_table.shm_pages[found-1].refcnt++;// increments the refcount
-    }
+    pa = shm_table.shm_pages[found-1].frame;//put inside mappages
+    mappages(curproc->pgdir, va, PGSIZE , V2P(pa), PTE_U | PTE_W);
+    shm_table.shm_pages[found-1].refcnt++;// increments the refcounti
+    curproc->sz += PGSIZE;
+   
+  }
   else{//case 2
     for (uint i =0; i < 64; i++){
       if (shm_table.shm_pages[i].refcnt == 0 && empty == 0){
@@ -61,10 +59,9 @@ int shm_open(int id, char **pointer) {
     shm_table.shm_pages[empty-1].refcnt++;// increments the refcount
 
   }
+
   
-  (**pointer)++;
-  
-return *va; //added to remove compiler warning -- you should decide what to return
+return (char*) va; //added to remove compiler warning -- you should decide what to return
 }
 
 
