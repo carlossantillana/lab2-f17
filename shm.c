@@ -29,13 +29,42 @@ void shminit() {
 }
 
 int shm_open(int id, char **pointer) {
+  uint found = 0, empty = 0;
+  char * pa, * va;
+  struct proc * curproc= myproc();
+  va = (char*)PGROUNDUP(curproc->sz);
+  for (uint i = 0; i< 64; i++) {
+    if (shm_table.shm_pages[i].id == id){
+      found = i+1;// if found set found to position of page plus one (for edge cases in if)
+     }
+    if (shm_table.shm_pages[i].refcnt == 0 && empty == 0){
+      shm_table.shm_pages[i].id = id;
+      empty = 1;
+    }
+  }
+  if (found ){//case 1
+    pa = shm_table.shm_pages[found-1].frame;//put inside map pages
+    mappages(curproc->pgdir, va,PGSIZE,V2P(pa), PTE_U | PTE_W);
+    shm_table.shm_pages[found-1].refcnt++;// increments the refcount
+    }
+  else{//case 2
+    for (uint i =0; i < 64; i++){
+      if (shm_table.shm_pages[i].refcnt == 0 && empty == 0){
+        shm_table.shm_pages[i].id = id;
+          empty = i+1;
+      }                 
+    }
+    shm_table.shm_pages[empty-1].frame = kalloc();
+    shm_table.shm_pages[empty-1].refcnt = 1;
+    pa = shm_table.shm_pages[empty-1].frame;//put inside map pages
+    mappages(curproc->pgdir, va ,PGSIZE,V2P(pa), PTE_U | PTE_W);
+    shm_table.shm_pages[empty-1].refcnt++;// increments the refcount
 
-//you write this
-
-
-
-
-return 0; //added to remove compiler warning -- you should decide what to return
+  }
+  
+  (**pointer)++;
+  
+return *va; //added to remove compiler warning -- you should decide what to return
 }
 
 
