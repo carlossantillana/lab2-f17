@@ -80,7 +80,7 @@ trap(struct trapframe *tf)
   case T_PGFLT:
     //cprintf("current esp: %x , endstack: %x , ", myproc()->tf->esp, myproc()->endstack);
 
-    if (myproc()->tf->esp < myproc()->endstack && myproc()->tf->esp > myproc()->sz+PGSIZE){
+    if (myproc()->tf->esp < myproc()->endstack && myproc()->tf->esp > myproc()->sz){//+PGSIZE){
       // cprintf("Inside first if statement\n");
       if ((myproc()->endstack = allocuvm(myproc()->pgdir, (myproc()->endstack)-2*PGSIZE, myproc()->endstack-PGSIZE)) == 0)
        panic("ahhh bad things happed\n");

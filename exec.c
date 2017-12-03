@@ -81,7 +81,7 @@ exec(char *path, char **argv)
   if((szstack = allocuvm(pgdir, (KERNBASE-4) -2*PGSIZE, KERNBASE-4)) == 0)
     goto bad;
 //clear pte_u on page used to create an inaccessaible page beneath the userstack
-  clearpteu(pgdir, (char*)(sz)); 
+//  clearpteu(pgdir, (char*)(sz)); fix later 
   //Later should probably change this to be at 0x40000000 rather than one below
   //stack...
   curproc->startstack = szstack;//top of stack ie highest address

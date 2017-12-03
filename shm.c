@@ -39,7 +39,9 @@ int shm_open(int id, char **pointer) {
       found = i+1;// if found set found to position of page plus one (for edge cases in if)
      }
   }
+  
   if (found ){//case 1
+    cprintf("Inside found\n");
     pa = shm_table.shm_pages[found-1].frame;//put inside mappages
     mappages(curproc->pgdir, va, PGSIZE , V2P(pa), PTE_U | PTE_W);
     shm_table.shm_pages[found-1].refcnt++;// increments the refcounti
@@ -47,6 +49,7 @@ int shm_open(int id, char **pointer) {
    
   }
   else{//case 2
+  cprintf("Case 2 \n");
     for (uint i =0; i < 64; i++){
       if (shm_table.shm_pages[i].refcnt == 0 && empty == 0){
         shm_table.shm_pages[i].id = id;
@@ -61,8 +64,8 @@ int shm_open(int id, char **pointer) {
 
   }
 
-  
-return (char*) va; //added to remove compiler warning -- you should decide what to return
+ cprintf("Leaving shmopen \n"); 
+return * va; //added to remove compiler warning -- you should decide what to return
 }
 
 
