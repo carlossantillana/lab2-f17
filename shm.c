@@ -59,10 +59,11 @@ int shm_open(int id, char **pointer) {
     shm_table.shm_pages[empty-1].frame = kalloc();
     shm_table.shm_pages[empty-1].refcnt = 1;
     pa = shm_table.shm_pages[empty-1].frame;//put inside map pages
-    mappages(curproc->pgdir, va ,PGSIZE,V2P(pa), PTE_U | PTE_W);
-    shm_table.shm_pages[empty-1].refcnt++;// increments the refcount
+    shm_table.shm_pages[empty-1].refcnt =1;
+    mappages(curproc->pgdir, va+PGSIZE ,PGSIZE,V2P(pa), PTE_U | PTE_W);
 
   }
+ release(&(shm_table.lock));
 
  cprintf("Leaving shmopen \n"); 
 return * va; //added to remove compiler warning -- you should decide what to return
