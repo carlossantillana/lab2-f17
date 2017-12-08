@@ -42,7 +42,7 @@ int shm_open(int id, char **pointer) {
   }
   
   if (found ){//case 1
-    cprintf("Inside found pa: %x \n",  shm_table.shm_pages[found-1].frame);
+   // cprintf("Inside found pa: %x \n",  shm_table.shm_pages[found-1].frame);
     //acquire(&(shm_table.lock));
     pa = shm_table.shm_pages[found-1].frame;//put inside mappages
     mappages(curproc->pgdir, va, PGSIZE , V2P(pa), PTE_U | PTE_W);
@@ -62,8 +62,8 @@ int shm_open(int id, char **pointer) {
     }
    // acquire(&(shm_table.lock));   
     shm_table.shm_pages[empty-1].frame = kalloc();
-    cprintf("kalloc pa: %x \n",  shm_table.shm_pages[empty-1].frame);
-    cprintf("uint pa: %x \n",  shm_table.shm_pages[empty-1].frame);
+  //  cprintf("kalloc pa: %x \n",  shm_table.shm_pages[empty-1].frame);
+   // cprintf("uint pa: %x \n",  shm_table.shm_pages[empty-1].frame);
 
    // shm_table.shm_pages[empty-1].refcnt = 1;
     pa = shm_table.shm_pages[empty-1].frame;//put inside map pages

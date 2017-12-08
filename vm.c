@@ -230,7 +230,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     return oldsz;
 //  cprintf("oldsz: %x ,  newsz: %x \n", oldsz, newsz);
   a = PGROUNDUP(oldsz);
- cprintf("in allocuvm: oldsz: %x ,  newsz: %x  \n", a, newsz);
+// cprintf("in allocuvm: oldsz: %x ,  newsz: %x  \n", a, newsz);
 
   for(; a < newsz; a += PGSIZE){
   //kalloc allocates one 4096 byte page returns pointer that kernel can use
